@@ -1,10 +1,14 @@
-import { getModel } from '../config/gemini.js';
+import { getGeminiModel } from '../config/gemini.js';
 import logger from '../utils/logger.js';
 
 class AIService {
     constructor() {
-        this.model = getModel();
-        this.conversationHistories = new Map(); // Cache de histórico em memória
+        this.conversationHistories = new Map();
+    }
+
+    // Getter lazy para o modelo
+    get model() {
+        return getGeminiModel();
     }
 
     /**
@@ -36,7 +40,7 @@ class AIService {
             return {
                 text: responseText,
                 intent: intent,
-                confidence: 0.85, // Placeholder - implementar análise real
+                confidence: 0.85,
                 requiresHuman: this.shouldTransferToHuman(userMessage, responseText, intent),
                 timestamp: new Date().toISOString()
             };
@@ -44,7 +48,6 @@ class AIService {
         } catch (error) {
             logger.error('❌ Erro ao gerar resposta com IA:', error);
             
-            // Fallback para resposta genérica
             return {
                 text: 'Desculpe, estou com dificuldades técnicas no momento. Vou transferir você para um atendente humano. 🙏',
                 intent: 'error',
@@ -64,7 +67,7 @@ class AIService {
         }
 
         const context = previousMessages
-            .slice(-5) // Últimas 5 mensagens para contexto
+            .slice(-5)
             .map(msg => `${msg.sender === 'user' ? 'Cliente' : 'Bot'}: ${msg.text}`)
             .join('\n');
 
@@ -91,7 +94,6 @@ class AIService {
     analyzeIntent(message) {
         const lowerMessage = message.toLowerCase();
 
-        // Palavras-chave para classificação de intenção
         const intents = {
             greeting: ['olá', 'oi', 'bom dia', 'boa tarde', 'boa noite', 'hey'],
             question: ['como', 'quando', 'onde', 'qual', 'quem', 'por que', '?'],
@@ -116,7 +118,6 @@ class AIService {
     shouldTransferToHuman(userMessage, botResponse, intent) {
         const lowerMessage = userMessage.toLowerCase();
         
-        // Gatilhos para transferência
         const transferKeywords = [
             'falar com atendente',
             'falar com humano',
@@ -133,7 +134,7 @@ class AIService {
         );
 
         const isComplaint = intent === 'complaint';
-        const isComplex = userMessage.length > 200; // Mensagens muito longas
+        const isComplex = userMessage.length > 200;
 
         return hasTransferKeyword || (isComplaint && isComplex);
     }
