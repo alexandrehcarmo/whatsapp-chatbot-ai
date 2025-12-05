@@ -4,15 +4,10 @@ import logger from '../utils/logger.js';
 
 dotenv.config();
 
-const apiKey = process.env.GEMINI_API_KEY;
+let genAI = null;
+let model = null;
+
 const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-
-if (!apiKey) {
-    logger.error('❌ GEMINI_API_KEY não configurada');
-    throw new Error('GEMINI_API_KEY é obrigatória');
-}
-
-const genAI = new GoogleGenerativeAI(apiKey);
 
 // Configuração do modelo otimizada para chatbot
 const generationConfig = {
@@ -60,24 +55,42 @@ FORMATO DE RESPOSTA:
 - Use listas quando apropriado
 - Finalize sempre com uma pergunta ou call-to-action`;
 
-function getModel() {
-    return genAI.getGenerativeModel({
+export function initializeGemini() {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+        logger.error('❌ GEMINI_API_KEY não configurada');
+        throw new Error('GEMINI_API_KEY é obrigatória');
+    }
+
+    genAI = new GoogleGenerativeAI(apiKey);
+
+    model = genAI.getGenerativeModel({
         model: modelName,
         generationConfig,
         safetySettings,
         systemInstruction
     });
+
+    logger.info('✅ Gemini inicializado com sucesso');
+    return model;
+}
+
+export function getGeminiModel() {
+    if (!model) {
+        throw new Error('Gemini não foi inicializado. Chame initializeGemini() primeiro.');
+    }
+    return model;
 }
 
 // Teste de API
-async function testGeminiAPI() {
+export async function testGeminiAPI() {
     try {
         logger.info('🔄 Testando conexão com Gemini...');
         logger.info(`📋 Modelo configurado: ${modelName}`);
-        logger.info(`🔑 API Key presente: ${apiKey ? 'SIM' : 'NÃO'}`);
         
-        const model = getModel();
-        const result = await model.generateContent("Olá, teste de conexão");
+        const geminiModel = getGeminiModel();
+        const result = await geminiModel.generateContent("Olá, teste de conexão");
         const response = result.response.text();
         
         logger.info('✅ API Gemini conectada e funcional');
@@ -96,6 +109,4 @@ async function testGeminiAPI() {
     }
 }
 
-testGeminiAPI();
-
-export { getModel, generationConfig, safetySettings };
+export { generationConfig, safetySettings };

@@ -1,9 +1,15 @@
 import { initializeSupabase, testConnection } from './config/database.js';
+import { initializeGemini, testGeminiAPI } from './config/gemini.js';
+import { initializeWhatsApp } from './config/whatsapp.js';
 
-// Inicializar Supabase ANTES de qualquer outra coisa
 try {
     initializeSupabase();
     await testConnection();
+    
+    initializeGemini();
+    await testGeminiAPI();
+    
+    initializeWhatsApp();
 } catch (error) {
     console.error('[FATAL ERROR] Falha ao inicializar:', error.message);
     process.exit(1);
