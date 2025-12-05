@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
 
+dotenv.config({ path: '.env.production' });
 dotenv.config();
 
 let genAI = null;

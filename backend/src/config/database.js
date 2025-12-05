@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
 
+// Carregar .env local se existir (desenvolvimento)
+dotenv.config({ path: '.env.production' });
 dotenv.config();
 
 let supabase = null;
