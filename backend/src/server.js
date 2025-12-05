@@ -1,3 +1,14 @@
+import { initializeSupabase, testConnection } from './config/database.js';
+
+// Inicializar Supabase ANTES de qualquer outra coisa
+try {
+    initializeSupabase();
+    await testConnection();
+} catch (error) {
+    console.error('[FATAL ERROR] Falha ao inicializar:', error.message);
+    process.exit(1);
+}
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
