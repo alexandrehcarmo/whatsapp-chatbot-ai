@@ -13,10 +13,10 @@ export function initializeSupabase() {
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-        logger.error('❌ Credenciais do Supabase não configuradas');
-        logger.error('SUPABASE_URL:', supabaseUrl ? 'OK' : 'FALTANDO');
-        logger.error('SUPABASE_SERVICE_KEY:', supabaseKey ? 'OK' : 'FALTANDO');
-        throw new Error('SUPABASE_URL e SUPABASE_SERVICE_KEY são obrigatórios');
+        logger.warn('⚠️ Credenciais do Supabase não configuradas (modo demo)');
+        logger.warn('SUPABASE_URL:', supabaseUrl ? 'OK' : 'FALTANDO');
+        logger.warn('SUPABASE_SERVICE_KEY:', supabaseKey ? 'OK' : 'FALTANDO');
+        // Não throw, apenas log
     }
 
     // Cliente Supabase com configurações otimizadas

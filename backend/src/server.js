@@ -5,15 +5,25 @@ import { initializeWhatsApp } from './config/whatsapp.js';
 try {
     initializeSupabase();
     await testConnection();
-    
+} catch (error) {
+    logger.warn('[WARNING] Supabase não disponível:', error.message);
+}
+
+try {
     initializeGemini();
     await testGeminiAPI();
-    
+} catch (error) {
+    logger.warn('[WARNING] Gemini não disponível:', error.message);
+}
+
+try {
     initializeWhatsApp();
 } catch (error) {
-    console.error('[FATAL ERROR] Falha ao inicializar:', error.message);
-    process.exit(1);
+    logger.warn('[WARNING] WhatsApp não disponível:', error.message);
 }
+
+// Servidor continua mesmo com erros
+logger.info('🚀 Servidor iniciando em modo demo (sem todas as credenciais)');
 
 import express from 'express';
 import cors from 'cors';

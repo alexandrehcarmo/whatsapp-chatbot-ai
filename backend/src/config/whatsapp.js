@@ -12,9 +12,8 @@ export function initializeWhatsApp() {
     const TWILIO_PHONE_NUMBER = process.env.WHATSAPP_PHONE_NUMBER;
 
     if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
-        logger.error('❌ Credenciais do Twilio não configuradas');
-        logger.info('💡 Configure WHATSAPP_ACCOUNT_SID e WHATSAPP_AUTH_TOKEN no arquivo .env');
-        throw new Error('Credenciais do Twilio são obrigatórias');
+        logger.warn('⚠️ Credenciais do Twilio não configuradas (modo demo)');
+        logger.info('💡 Configure WHATSAPP_ACCOUNT_SID e WHATSAPP_AUTH_TOKEN');
     }
 
     // Validar formato do número

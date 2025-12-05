@@ -60,8 +60,8 @@ export function initializeGemini() {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        logger.error('❌ GEMINI_API_KEY não configurada');
-        throw new Error('GEMINI_API_KEY é obrigatória');
+        logger.warn('⚠️ GEMINI_API_KEY não configurada (modo demo)');
+        // Não throw, apenas log
     }
 
     genAI = new GoogleGenerativeAI(apiKey);
